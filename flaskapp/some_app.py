@@ -80,9 +80,9 @@ def net():
         neurodic[elem[0][1]] = elem[0][2]
     # сохраняем загруженный файл
     form.upload.data.save(filename)
-# передаем форму в шаблон, так же передаем имя файла и результат работы нейронной
-# сети если был нажат сабмит, либо передадим falsy значения
-return render_template('net.html',form=form,image_name=filename,neurodic=neurodic)
+  # передаем форму в шаблон, так же передаем имя файла и результат работы нейронной
+  # сети если был нажат сабмит, либо передадим falsy значения
+  return render_template('net.html',form=form,image_name=filename,neurodic=neurodic)
 
 from flask import request
 from flask import Response
@@ -115,12 +115,27 @@ def apinet():
     # handle = open('./static/f.png','wb')
     # handle.write(cfile)
     # handle.close()
-# преобразуем словарь в json строку
-ret = json.dumps(neurodic)
-# готовим ответ пользователю
-resp = Response(response=ret,
+  # преобразуем словарь в json строку
+  ret = json.dumps(neurodic)
+  # готовим ответ пользователю
+  resp = Response(response=ret,
             status=200,
             mimetype="application/json")
-# возвращаем ответ
-return resp
+  # возвращаем ответ
+  return resp
 
+import lxml.etree as ET
+
+@app.route("/apixml",methods=['GET', 'POST'])
+def apixml():
+  #парсим xml файл в dom
+  dom = ET.parse("./static/xml/file.xml")
+  #парсим шаблон в dom
+  xslt = ET.parse("./static/xml/file.xslt")
+  #получаем трансформер
+  transform = ET.XSLT(xslt)
+  #преобразуем xml с помощью трансформера xslt
+  newhtml = transform(dom)
+  #преобразуем из памяти dom в строку, возможно, понадобится указать кодировку
+  strfile = ET.tostring(newhtml)
+  return strfile
