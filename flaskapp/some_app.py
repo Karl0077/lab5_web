@@ -1,6 +1,9 @@
 print("Hello world")
 from flask import Flask
 app = Flask(__name__)
+import os
+SECRET_KEY = 'secret'+str(random())
+app.config['SECRET_KEY']=SECRET_KEY
 
 #декоратор для вывода страницы по умолчанию
 @app.route("/")
@@ -35,6 +38,10 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = '6LdGev4UAAAAAEAMnqeJmoNc-KKMWIHAXT39CmO8'
 app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 # создаем форму для загрузки файла
 
+from flask_bootstrap import Bootstrap
+# обязательно добавить для работы со стандартными шаблонами
+bootstrap = Bootstrap(app)
+
 class NetForm(FlaskForm):
   # поле для введения строки, валидируется наличием данных
   # валидатор проверяет введение данных после нажатия кнопки submit
@@ -55,7 +62,6 @@ class NetForm(FlaskForm):
 # модуль проверки и преобразование имени файла
 # для устранения в имени символов типа / и т.д.
 from werkzeug.utils import secure_filename
-import os
 # подключаем наш модуль и переименовываем
 # для исключения конфликта имен
 import net as neuronet
